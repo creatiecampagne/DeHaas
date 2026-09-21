@@ -1,0 +1,9 @@
+{
+  "name": "de-haas-werfkaart",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": { "build": "node build.mjs", "start": "python3 -m http.server 4173 --bind 127.0.0.1" },
+  "dependencies": { "three": "0.180.0" },
+  "devDependencies": { "esbuild": "0.25.10" }
+}
