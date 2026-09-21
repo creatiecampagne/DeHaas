@@ -60,7 +60,7 @@ export class DeHaasShipyard extends HTMLElement {
             <div class="fallback" hidden>${icon('hall')}<strong>Ontdek onze faciliteiten</strong><p>De 3D-weergave is niet beschikbaar in deze browser. Je kunt alle faciliteiten bekijken via de lijst.</p></div>
           </div>
           <aside class="sidebar" aria-label="Faciliteiten ${this.data.name}">
-            <div class="panel-head"><div class="panel-title-row"><div><div class="eyebrow">De Haas Shipyards</div><h2>Ontdek ${this.data.name}</h2></div><button class="collapse-button" aria-label="Faciliteitenlijst inklappen" aria-expanded="true" title="Lijst inklappen">${icon('panel')}</button></div><p>${this.data.features.length===8?'Acht':this.data.features.length} faciliteiten. Eén complete werf.<br>Kies een onderdeel en kijk dichterbij.</p></div>
+            <div class="panel-head"><div class="panel-title-row"><div><div class="eyebrow">De Haas Shipyards</div><h2>Ontdek ${this.data.name}</h2></div><button class="collapse-button" aria-label="Faciliteitenlijst inklappen" aria-expanded="true" title="Lijst inklappen">${icon('panel')}</button></div><p>${this.data.features.length===9?'Negen':this.data.features.length===8?'Acht':this.data.features.length} faciliteiten. Eén complete werf.<br>Kies een onderdeel en kijk dichterbij.</p></div>
             <div class="facility-list">
               ${this.data.features.map(f=>`<section class="facility" data-id="${f.id}"><h3><button class="facility-button" data-id="${f.id}" id="button-${f.id}" aria-expanded="false" aria-controls="detail-${f.id}"><span class="facility-icon">${icon(f.icon)}</span><span class="facility-name">${f.name}</span><span class="facility-number">${f.number}</span><span class="facility-chevron">${icon('chevron')}</span></button></h3><div class="facility-detail" id="detail-${f.id}" role="region" aria-labelledby="button-${f.id}" hidden><p>${f.description}</p><dl class="facts">${f.facts.map(([label,value])=>`<div class="fact"><dt>${label}</dt><dd>${value}</dd></div>`).join('')}</dl></div></section>`).join('')}
             </div>
@@ -267,6 +267,12 @@ export class DeHaasShipyard extends HTMLElement {
       if(visible){
         let offsetX=0,offsetY=0;
         const candidates=[[0,0],[0,54],[-46,0],[46,0],[0,-54],[-46,54],[46,54],[-46,-54],[46,-54],[0,108],[-92,0],[92,0],[0,-108],[-46,108],[46,108],[0,162]];
+        // A ninth facility can exhaust the nearby offsets on narrow screens.
+        // Fall back to the closest free grid slot instead of overlapping a pin.
+        const fallback=[];
+        for(let py=55;py<=height-75;py+=52)for(let px=24;px<=width-24;px+=46)fallback.push([px-x,py-y]);
+        fallback.sort((a,b)=>a[0]*a[0]+a[1]*a[1]-b[0]*b[0]-b[1]*b[1]);
+        candidates.push(...fallback);
         for(const [dx,dy] of candidates){
           const px=x+dx,py=y+dy;
           if(py<55||py>height-75||px<24||px>width-24)continue;

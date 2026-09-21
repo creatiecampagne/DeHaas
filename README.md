@@ -2,6 +2,29 @@
 
 Een zelfstandige, volledig in code opgebouwde 3D-kaart van de Rotterdamse werf. De interface volgt het opgegeven kleurenpalet en gebruikt het logo en de Gilroy-lettertypen van de huidige De Haas-website. De pagina bevat uitsluitend de kaart en de bijbehorende bediening.
 
+## Aanvullende terreinrevisie — versie 1.2
+
+De nieuwe afbakening in `DHR_Campagne_0065.jpg` en de magazijnfoto `DJI_0446.jpeg` zijn verwerkt. Omliggende gebouwen en installaties zijn wit uitgevoerd; aan de landzijde loopt de ondergrond door. Daar zijn de voormalige kadewanden verwijderd zodat de werf niet meer als een eiland oogt.
+
+Het Magazijn is toegevoegd naast de insteekhaven, met hoge raamstroken, daklichten en belettering. Het heeft een eigen negende hotspot en informatiepaneel. De afspuitplaats ligt op verzoek tussen de insteekhaven en het magazijn. De afmetingen van het magazijn (circa 30 × 74 × 12 m) en de wasstrook (circa 18 × 52 m) zijn visuele schattingen.
+
+De schepen op het droge staan nu vóór het kantoor, nabij de travelift en de voorste kade. De ruimte voorbij het kantoor blijft werk- en opslagterrein. De parkeerplaatsen zijn ingedeeld in twee grotere vakken op het binnenste voorplein en een kleinere rij bij het kantoor, met lege plaatsen en rijruimte. De terrein- en eigendomsgrenzen zijn een gestileerde interpretatie van de aangeleverde afbakening, geen kadastrale registratie.
+
+Onderstaande beschrijving van de eerdere revisie beschrijft de basis; deze aanvullende terreinrevisie vervangt de oude scheeps-, parkeer- en afspuitplaatsposities.
+
+## Revisie 21 september 2026
+
+De terreinindeling en de modellen zijn herzien op basis van de nieuwe luchtfoto `_K9I4595.JPG`, de bestaande isometrische kaart en de foto's van RPA-havenwerkvaartuigen:
+
+- Het kantoor heeft een T-vormige plattegrond met twee bouwlagen, modulaire gevels, ramen, buitentrap en De Haas-belettering. Het staat centraal op het terrein. De voorgevel ligt op dezelfde lijn als de halpoort: z = 11 m tegenover z = 12 m in het model.
+- De travelift staat met een werkvaartuig op het centrale werkterrein, zoals op de nieuwe luchtfoto. De insteekhaven en de route naar de hal blijven vrij toegankelijk. De lift is een statische momentopname van een mobiel object.
+- De grotere schepen hebben een diepe, gefacetteerde romp, hoge voorste stuurhut met schuine ramen, laag werkdek achter, bandenfenders, stootranden, dekkranen, relingen, radar en antennes. Op het droge zijn kielblokken, zijstutten en schroefunits zichtbaar.
+- De kadekraan is vervangen door een generieke torenkraan met een verticale vakwerkmast, horizontale giek, contragiek, ballast, kabels en haak, naar het gewenste silhouet uit de 2D-kaart.
+- Zaagtanddaken, lagere aangrenzende halvolumes, een open werkportaal, gebogen werkloodsjes, containers, kabelhaspels, materiaalrekken, parkeerplaatsen en een vereenvoudigde trainingsinstallatie met schoorsteen en tank geven het terrein meer herkenbare details.
+- Twee grote pontongroepen met loopbruggen en afgemeerde werkvaartuigen vormen de belangrijkste aanlegplaatsen. Een kleiner serviceponton ligt verder langs de kade.
+
+De luchtfoto geeft de ruimtelijke samenhang; de kraanvorm volgt expliciet de gewenste 2D-referentie. De schepen, tijdelijke werfinrichting en aanvullende bouwvolumes blijven gestileerde interpretaties. Er zijn geen exacte bouwtekeningen of nieuwe landmetingen beschikbaar gesteld.
+
 ## Bekijken
 
 Open **index.html** in een moderne browser. Alle benodigde code, fonts en het logo zitten in dit bestand; er zijn tijdens gebruik geen CDN-verzoeken, accounts of API-sleutels nodig.
@@ -34,6 +57,10 @@ Als iframe kan ook de zelfstandige pagina worden gebruikt:
 
 Geef de iframe op smalle schermen desgewenst circa 1.110 px hoogte; anders blijft de inhoud binnen de iframe scrollbaar. De knop voor vergroten vult het huidige venster, of het iframe bij iframe-inbouw. Bij een strenge Content Security Policy moeten de ingesloten stijlen, datafonts en het datalogo worden toegestaan; directe inbouw is daarom het eenvoudigst binnen de bestaande De Haas-infrastructuur.
 
+## Controle van versie 1.2
+
+De nieuwe magazijnhotspot opent het juiste informatiepaneel en de camera focust op het gebouw. Het magazijn, de wasstrook en de omliggende bebouwing zijn op desktop bekeken. Op 320 px zijn alle negen hotspots zichtbaar binnen het scherm en overlappen hun klikvlakken niet. Ook de magazijnselectie is op die breedte gecontroleerd. De geometriecontrole vindt negen niet-lege faciliteiten, eindige coördinaten en geen textures of koraalkleur in de 3D-modellen.
+
 ## Bediening
 
 - Sleep met de muis of één vinger om rond de werf te draaien.
@@ -56,12 +83,12 @@ De scene gebruikt meters: **1 eenheid = 1 meter**. Het is een gestileerde ruimte
 | Terrein en kade | Aangeleverde satellietuitsnede, gelabelde luchtfoto en Google Maps-satellietbeeld op Scheepsbouwplein 3 | Visueel gereconstrueerd; geen ingemeten perceelsgrens |
 | Insteekhaven | Meetfunctie Google Maps: meetlijn door het zichtbare bassin, 74,33 m | Circa 75 m in het model; de meetlijn is een schaalcontrole, geen gecertificeerde volledige kadelengte |
 | Breedte insteekhaven | Fotoverhoudingen en benodigde ruimte voor schepen | Circa 18 m in het model, geschat |
-| Scheepsbouwloods | Opgave 120 × 28 m; vrije hoogte >21 m | Hoofdvolume 120 × 28 m, buitengevel circa 26 m, nok circa 30 m; hoogte en details gestileerd |
+| Scheepsbouwloods | Opgave 120 × 28 m; vrije hoogte >21 m en nieuwe luchtfoto | Hoofdvolume 120 × 28 m, buitengevel circa 26 m, zaagtanddaken tot circa 29 m; aangrenzende lagere halvolumes dienen als context |
 | Travelift | Marine Travelift 820C; foto's, personen en schepen als schaalreferentie | Frame circa 36 m lang, 28 m tussen buitenzijden van portalen en 27 m hoog; geen fabriekstekening |
 | Capaciteit travelift | De Haas: 820 ton, schepen ca. 70 m lang en 14,5 m breed | Gepubliceerde gebruikscapaciteit, niet de buitenmaat van de lift |
-| Afspuitplaats, kadekraan, kantoor en pontons | Aangeleverde beelden | Visuele schattingen; de kraan is generiek |
+| Afspuitplaats, kadekraan, kantoor en pontons | Aangeleverde beelden, inclusief de nieuwe luchtfoto en 2D-kaart | Visuele schattingen; kantoor circa 32 × 35 m in T-vorm, kraanmast tot circa 40 m met 43 m totale giek/contragiek |
 | Werfvloer | Opgave ruim 1 ha vloeistofdichte vloer | Deze oppervlakte is niet gelijkgesteld aan de volledige getekende kavel |
-| Schepen | Vereenvoudigde werkvaartuigen van ongeveer 21–29 m | Illustratieve vormen en posities, geen actuele bezettingsregistratie |
+| Schepen | Havenwerkvaartuigen van circa 34–38 m, met de RPA-foto's als vormreferentie | Bewust groter dan de eerste versie; illustratieve schaal en bezetting, geen geverifieerde afmetingen van RPA 7 of RPA 15 |
 
 De kadekraan, boten, raamindeling en werkmaterialen hebben extra geometrische details. Rood/koraal wordt alleen gebruikt in bediening en hotspots. Licht en schaduw produceren varianten van de opgegeven basiskleuren.
 
@@ -107,7 +134,8 @@ document.querySelector('de-haas-shipyard').addEventListener('facilitychange', ev
 - Hotspot → lijst, lijst → camerafocus, reset, inklappen/heropenen, zoomgrenzen, toetsenbord en vergroten/Escape gecontroleerd.
 - Schermbreedtes 320, 390, 1.024 en 1.440 px bekeken. Canvas en markers schalen samen. Op 320 px waren alle acht markers zichtbaar zonder overlappende klikvlakken.
 - Fallback met uitgeschakelde WebGL getest; de lijst blijft werken.
-- Scene: circa **49.000 driehoeken**, **45 samengevoegde meshgroepen**. Schaduwweergave kan extra tekenopdrachten veroorzaken.
+- Revisie 21 september: de nieuwe kantoor-, kraan- en scheepsmodellen visueel gecontroleerd, hotspotselectie en camerafocus opnieuw bekeken. Ook bij 320 px waren alle acht markers zichtbaar, zonder overlappende klikvlakken; daarnaast is 390 px opnieuw bekeken. Geen waarschuwingen of fouten in de browserconsole tijdens deze controles.
+- Scene: circa **121.000 driehoeken**, **54 samengevoegde meshgroepen**. Schaduwweergave kan extra tekenopdrachten veroorzaken.
 - Script ongeveer **1,1 MB ongecomprimeerd**, circa **0,39 MB met gzip**, inclusief Three.js en de huisstijlassets. Geen externe 3D-downloads.
 - De scene rendert op aanvraag tijdens interactie en camera-overgangen; er is geen doorlopende kraan-, water- of scheepsanimatie. De pixeldichtheid is begrensd.
 
@@ -116,6 +144,7 @@ De browsertests zijn uitgevoerd in de ingebouwde Chromium-browser. Touchbedienin
 ## Bronnen en assets
 
 - De door Coen aangeleverde foto's, screenshots, gelabelde luchtfoto en `de-haas-rotterdam_referentiemateriaal.html`.
+- Aanvullingen van 21 september 2026: luchtfoto `_K9I4595.JPG`, screenshot van de isometrische Rotterdam-kaart, RPA-vaartuigen op stutten en het zijaanzicht van RPA 15. De oorspronkelijke bestanden worden niet in deze download opgenomen.
 - [De Haas Shipyards](https://dehaas.nl/shipyards/) — capaciteit travelift en locatie.
 - [Onze faciliteiten](https://dehaas.nl/shipyards/onze-faciliteiten/) — huisstijl, logo, fonts en informatiepatroon.
 - [Google Maps: Scheepsbouwplein 3](https://www.google.com/maps/place/Scheepsbouwplein+3,+Rotterdam/) — satellietcontrole en bassinmeetlijn, geraadpleegd 18 september 2026.
