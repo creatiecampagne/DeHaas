@@ -1,50 +1,70 @@
-# De Haas Shipyards — interactieve werfkaart
+# De Haas Shipyards — interactieve werfkaart 2.0
 
-Een zelfstandige, volledig in code opgebouwde 3D-kaart van de Rotterdamse werf. De interface volgt het opgegeven kleurenpalet en gebruikt het logo en de Gilroy-lettertypen van de huidige De Haas-website. De pagina bevat uitsluitend de kaart en de bijbehorende bediening.
+Een zelfstandige Three.js-component voor de Rotterdamse werf. Alle 3D-geometrie wordt in code opgebouwd. Het script, logo en de Gilroy-lettertypen zijn in `index.html` ingesloten; er zijn geen externe 3D-bestanden, textures of CDN-verzoeken nodig.
 
-## Aanvullende terreinrevisie — versie 1.2
+## Nieuwe basis: de aangeleverde SVG
 
-De nieuwe afbakening in `DHR_Campagne_0065.jpg` en de magazijnfoto `DJI_0446.jpeg` zijn verwerkt. Omliggende gebouwen en installaties zijn wit uitgevoerd; aan de landzijde loopt de ondergrond door. Daar zijn de voormalige kadewanden verwijderd zodat de werf niet meer als een eiland oogt.
+`Plattegrond_De_Haas_Rotterdam.svg` is leidend voor de grondvorm en de onderlinge verhoudingen. De zichtbare vectoren zijn rechtstreeks uitgelezen naar `src/plan-data.json`. De referentie staat ook in `reference/plattegrond.svg`, zonder de twee verborgen, extern gekoppelde foto-onderlagen.
 
-Het Magazijn is toegevoegd naast de insteekhaven, met hoge raamstroken, daklichten en belettering. Het heeft een eigen negende hotspot en informatiepaneel. De afspuitplaats ligt op verzoek tussen de insteekhaven en het magazijn. De afmetingen van het magazijn (circa 30 × 74 × 12 m) en de wasstrook (circa 18 × 52 m) zijn visuele schattingen.
+De nieuwe indeling vervangt de eerdere visuele reconstructie. Overgenomen zijn:
 
-De schepen op het droge staan nu vóór het kantoor, nabij de travelift en de voorste kade. De ruimte voorbij het kantoor blijft werk- en opslagterrein. De parkeerplaatsen zijn ingedeeld in twee grotere vakken op het binnenste voorplein en een kleinere rij bij het kantoor, met lege plaatsen en rijruimte. De terrein- en eigendomsgrenzen zijn een gestileerde interpretatie van de aangeleverde afbakening, geen kadastrale registratie.
+- De kadecontour, gebogen buitenkade, insteekhaven en het bijbehorende plateau.
+- Vloerbelijning en alle getekende parkeerrijen, inclusief de auto’s uit de SVG.
+- De gebouwposities en voetafdrukken van de reparatiehal, het kantoor en Het Magazijn. Het kantoor volgt nu de twee aansluitende rechthoeken uit de SVG.
+- De afspuitplaats naast de insteekhaven, de kraanpositie, pontonarmen, vaste schepen en aanlegposities.
+- Containers, trailers, materiaalblokken en drie kleine werkloodsen met gebogen dak.
+- De wit aangegeven omliggende kade als eenvoudige witte massa. Twee van de vier magazijnhallen zijn blauw; de overige twee zijn wit.
 
-Onderstaande beschrijving van de eerdere revisie beschrijft de basis; deze aanvullende terreinrevisie vervangt de oude scheeps-, parkeer- en afspuitplaatsposities.
+De overzichtsfoto `DJI_0457(1).jpeg` en de eerdere referentiefoto’s geven de vormtaal en de details van gebouwen en vaartuigen. De positie van tijdelijke objecten uit de foto overschrijft de SVG niet. De oorspronkelijke huisstijlkleuren blijven in gebruik; de oranje/blauwe annotatiekleuren uit de SVG zijn vertaald naar die huisstijl. Koraal wordt uitsluitend voor de interface en hotspots gebruikt.
 
-## Revisie 21 september 2026
+### Verhoudingen en absolute schaal
 
-De terreinindeling en de modellen zijn herzien op basis van de nieuwe luchtfoto `_K9I4595.JPG`, de bestaande isometrische kaart en de foto's van RPA-havenwerkvaartuigen:
+Eén uniforme schaal gebruikt de eerdere opgave van **120 m hallengte**: 883,976 SVG-eenheden worden 120 modelmeters. De halbreedte wordt daarmee circa 27,69 m. Alle posities en planafmetingen gebruiken dezelfde factor; gebouwen en terrein zijn niet afzonderlijk opgerekt om de oude kaart te behouden. Kleine geveldetails, fenders en de externe halpoortconstructie steken buiten de gebouw- of scheepsvoetafdruk uit.
 
-- Het kantoor heeft een T-vormige plattegrond met twee bouwlagen, modulaire gevels, ramen, buitentrap en De Haas-belettering. Het staat centraal op het terrein. De voorgevel ligt op dezelfde lijn als de halpoort: z = 11 m tegenover z = 12 m in het model.
-- De travelift staat met een werkvaartuig op het centrale werkterrein, zoals op de nieuwe luchtfoto. De insteekhaven en de route naar de hal blijven vrij toegankelijk. De lift is een statische momentopname van een mobiel object.
-- De grotere schepen hebben een diepe, gefacetteerde romp, hoge voorste stuurhut met schuine ramen, laag werkdek achter, bandenfenders, stootranden, dekkranen, relingen, radar en antennes. Op het droge zijn kielblokken, zijstutten en schroefunits zichtbaar.
-- De kadekraan is vervangen door een generieke torenkraan met een verticale vakwerkmast, horizontale giek, contragiek, ballast, kabels en haak, naar het gewenste silhouet uit de 2D-kaart.
-- Zaagtanddaken, lagere aangrenzende halvolumes, een open werkportaal, gebogen werkloodsjes, containers, kabelhaspels, materiaalrekken, parkeerplaatsen en een vereenvoudigde trainingsinstallatie met schoorsteen en tank geven het terrein meer herkenbare details.
-- Twee grote pontongroepen met loopbruggen en afgemeerde werkvaartuigen vormen de belangrijkste aanlegplaatsen. Een kleiner serviceponton ligt verder langs de kade.
+De SVG bevat geen maatlijnen. De absolute schaal is daarom nog geen onafhankelijke landmeting: bijvoorbeeld de getekende parkeersteek van circa 11,565 SVG-eenheden komt met deze kalibratie uit op circa 1,57 m. De SVG-verhoudingen zijn behouden. Voor meetvaste fysieke afmetingen is een bevestigde maat in het nieuwe plan nodig. Hoogtes blijven schattingen op basis van foto’s (hoofdhal circa 26 m gevelhoogte, travelift circa 21 m, magazijn circa 11 m, kantoor twee lagen).
 
-De luchtfoto geeft de ruimtelijke samenhang; de kraanvorm volgt expliciet de gewenste 2D-referentie. De schepen, tijdelijke werfinrichting en aanvullende bouwvolumes blijven gestileerde interpretaties. Er zijn geen exacte bouwtekeningen of nieuwe landmetingen beschikbaar gesteld.
+## Traveliftcyclus
 
-## Bekijken
+De animatie volgt de getekende route tussen de boot in de insteekhaven en de gestippelde standplaats. Eén volledige cyclus duurt **138 seconden**, inclusief rustmomenten:
 
-Open **index.html** in een moderne browser. Alle benodigde code, fonts en het logo zitten in dit bestand; er zijn tijdens gebruik geen CDN-verzoeken, accounts of API-sleutels nodig.
+1. De lift vertrekt vanaf zijn SVG-startpositie en rijdt over de boot.
+2. De banden zakken, sluiten onder de romp en hijsen de boot uit het water.
+3. De lift brengt het schip over de aangegeven route naar de werf en zet het op bokken.
+4. De banden komen vrij; de lift rijdt zonder boot terug naar de startpositie.
+5. Na 12 seconden haalt de lift de boot weer op.
+6. Het schip gaat via dezelfde route terug naar de insteekhaven en wordt te water gelaten.
+7. De lege lift keert terug naar de startplaats. Na een rustmoment begint de cyclus opnieuw.
 
-De map bevat ook de losse **de-haas-kaart.js** voor directe inbouw en de leesbare broncode. Het bestand `index.html` is dezelfde component, in een minimale voorbeeldpagina.
+De last, banden en kabels bewegen samen. De boot blijft tijdens het wachten op de bokken staan. De hotspot van de travelift beweegt mee. Als de travelift geselecteerd is, volgt de camera zijn beweging; zelf slepen beëindigt dat volgen. De lift, de hijsbanden en het gehesen schip draaien mee met de bochten. De vier wielstellen sturen zichtbaar, met tegengestelde stuurhoeken voor en achter. Op de terugweg rijdt de lift achteruit langs dezelfde bochten. De aanrijbocht naar de bokken is afgerond en iets verruimd om de vaste schepen vrij te houden; start- en eindposities blijven gelijk aan de SVG. Beweging en snelheid zijn illustratief.
 
-## Inbouwen op de website
+De cyclus is een functie van verstreken tijd. Daardoor ontstaat bij herhaling, pauzeren of tabwissels geen opstapelende positieafwijking. Een verborgen tab of een kaart buiten het scherm pauzeert de voortgang. Bij `prefers-reduced-motion` start de kaart gepauzeerd; de bezoeker kan de animatie zelf starten.
 
-Plaats `de-haas-kaart.js` op de eigen website, bijvoorbeeld onder `/assets/werfkaart/`. Voeg daarna op de faciliteitenpagina toe:
+## Bekijken en bedienen
+
+Open **index.html** in een moderne browser, of bekijk de component via een lokale webserver.
+
+- Sleep of gebruik één vinger om te draaien; scroll, knijp of gebruik +/− om te zoomen.
+- Klik op een hotspot of faciliteit om het onderdeel te bekijken. Hover toont de bijbehorende informatie.
+- **Overzicht** herstelt de startcamera.
+- **Bovenaanzicht** kijkt recht op de plattegrond, pauzeert de animatie en verbergt de hotspots. Klik opnieuw of kies Overzicht om terug te gaan.
+- De knop naast **Travelift in actie** pauzeert of hervat de cyclus op dezelfde plek.
+- De lijst kan worden ingeklapt. De vergrotingsknop vult het huidige venster; Escape sluit deze weergave.
+- Toetsenbord: Tab voor bediening, pijltjes om de gefocuste kaart te draaien, +/− voor zoom en Home voor het overzicht.
+
+Alle negen faciliteiten zijn beschikbaar. Maassluis staat klaar als uitgeschakelde tweede locatie. Als WebGL ontbreekt, blijft de informatie via de faciliteitenlijst beschikbaar.
+
+## Inbouwen
+
+Upload `de-haas-kaart.js` naar de eigen website en plaats:
 
 ```html
 <de-haas-shipyard location="rotterdam"></de-haas-shipyard>
 <script defer src="/assets/werfkaart/de-haas-kaart.js"></script>
 ```
 
-Er is geen React, Vue of WordPress-plugin nodig. De component past zich aan de breedte van zijn container aan. De interne stijlen staan in een Shadow DOM zodat ze de bestaande pagina niet beïnvloeden. Voor het desktopaanzicht is een container van ten minste ongeveer 1.000 px prettig.
+De component gebruikt Shadow DOM en heeft geen React, Vue of WordPress-plugin nodig. De bediening past zich aan de containerbreedte aan; op smalle schermen staat de lijst onder de kaart.
 
-Bij een kleiner vlak dan 720 px komt de lijst onder de kaart. Op desktop is de kaarthoogte tussen 660 en 860 px, afhankelijk van het venster. Deze instellingen staan in `src/styles.css`.
-
-Als iframe kan ook de zelfstandige pagina worden gebruikt:
+Een iframe kan ook:
 
 ```html
 <iframe
@@ -55,99 +75,51 @@ Als iframe kan ook de zelfstandige pagina worden gebruikt:
 </iframe>
 ```
 
-Geef de iframe op smalle schermen desgewenst circa 1.110 px hoogte; anders blijft de inhoud binnen de iframe scrollbaar. De knop voor vergroten vult het huidige venster, of het iframe bij iframe-inbouw. Bij een strenge Content Security Policy moeten de ingesloten stijlen, datafonts en het datalogo worden toegestaan; directe inbouw is daarom het eenvoudigst binnen de bestaande De Haas-infrastructuur.
+Voor de gestapelde mobiele indeling is een hoger iframe wenselijk, circa 1.110 px. De vergrotingsknop vult binnen een iframe het iframevenster. De uiteindelijke pagina moet de ingesloten stijlen, fonts en het logo toestaan als er een strenge Content Security Policy actief is.
 
-## Controle van versie 1.2
-
-De nieuwe magazijnhotspot opent het juiste informatiepaneel en de camera focust op het gebouw. Het magazijn, de wasstrook en de omliggende bebouwing zijn op desktop bekeken. Op 320 px zijn alle negen hotspots zichtbaar binnen het scherm en overlappen hun klikvlakken niet. Ook de magazijnselectie is op die breedte gecontroleerd. De geometriecontrole vindt negen niet-lege faciliteiten, eindige coördinaten en geen textures of koraalkleur in de 3D-modellen.
-
-## Bediening
-
-- Sleep met de muis of één vinger om rond de werf te draaien.
-- Scroll, knijp met twee vingers of gebruik +/− om te zoomen.
-- Beweeg over een hotspot om het onderdeel en de informatie te zien. Klik om erop te focussen.
-- Klik op een faciliteit in de lijst om het model dichterbij te bekijken.
-- Klap de lijst in voor extra kijkruimte. Klikken op een hotspot opent de lijst weer.
-- **Overzicht** herstelt het vaste startaanzicht en sluit de geselecteerde informatie.
-- De knop voor vergroten vult het venster. Escape sluit de vergrote weergave.
-- Toetsenbord: focus de kaart met Tab; pijltjes draaien, +/− zoomen en Home herstelt het overzicht. De lijst en hotspots zijn eveneens toetsenbordbedienbaar.
-
-De camera blijft boven het terrein en heeft grenzen voor in- en uitzoomen. Camera-overgangen houden rekening met `prefers-reduced-motion`. Als WebGL niet beschikbaar is, blijft de faciliteitenlijst bruikbaar.
-
-## Model en schaal
-
-De scene gebruikt meters: **1 eenheid = 1 meter**. Het is een gestileerde ruimtelijke reconstructie, geen landmeetkundig of bouwkundig model. De terreincontour en onderlinge plaatsing volgen de aangeleverde satellietuitsnede en gelabelde luchtfoto; de contour is vereenvoudigd. De 3D-scene bevat geen fototextures, reflecties, PBR-materialen of geïmporteerde 3D-bestanden.
-
-| Onderdeel | Gebruikte basis | Status |
-|---|---|---|
-| Terrein en kade | Aangeleverde satellietuitsnede, gelabelde luchtfoto en Google Maps-satellietbeeld op Scheepsbouwplein 3 | Visueel gereconstrueerd; geen ingemeten perceelsgrens |
-| Insteekhaven | Meetfunctie Google Maps: meetlijn door het zichtbare bassin, 74,33 m | Circa 75 m in het model; de meetlijn is een schaalcontrole, geen gecertificeerde volledige kadelengte |
-| Breedte insteekhaven | Fotoverhoudingen en benodigde ruimte voor schepen | Circa 18 m in het model, geschat |
-| Scheepsbouwloods | Opgave 120 × 28 m; vrije hoogte >21 m en nieuwe luchtfoto | Hoofdvolume 120 × 28 m, buitengevel circa 26 m, zaagtanddaken tot circa 29 m; aangrenzende lagere halvolumes dienen als context |
-| Travelift | Marine Travelift 820C; foto's, personen en schepen als schaalreferentie | Frame circa 36 m lang, 28 m tussen buitenzijden van portalen en 27 m hoog; geen fabriekstekening |
-| Capaciteit travelift | De Haas: 820 ton, schepen ca. 70 m lang en 14,5 m breed | Gepubliceerde gebruikscapaciteit, niet de buitenmaat van de lift |
-| Afspuitplaats, kadekraan, kantoor en pontons | Aangeleverde beelden, inclusief de nieuwe luchtfoto en 2D-kaart | Visuele schattingen; kantoor circa 32 × 35 m in T-vorm, kraanmast tot circa 40 m met 43 m totale giek/contragiek |
-| Werfvloer | Opgave ruim 1 ha vloeistofdichte vloer | Deze oppervlakte is niet gelijkgesteld aan de volledige getekende kavel |
-| Schepen | Havenwerkvaartuigen van circa 34–38 m, met de RPA-foto's als vormreferentie | Bewust groter dan de eerste versie; illustratieve schaal en bezetting, geen geverifieerde afmetingen van RPA 7 of RPA 15 |
-
-De kadekraan, boten, raamindeling en werkmaterialen hebben extra geometrische details. Rood/koraal wordt alleen gebruikt in bediening en hotspots. Licht en schaduw produceren varianten van de opgegeven basiskleuren.
-
-## Bestanden aanpassen
+## Bronbestanden
 
 | Bestand | Inhoud |
 |---|---|
-| `src/locations.js` | Locaties, teksten, feiten, startcamera, hotspotankers en focuspunten |
-| `src/model.js` | Volledige geometrie: terrein, loods, lift, kraan, schepen, kantoor en pontons |
-| `src/component.js` | Camera, selecties, lifecycle, toegankelijkheid en renderen |
-| `src/styles.css` | Huisstijl, responsive indeling en bediening |
-| `src/icons.js` | Lijniconen in SVG |
-| `build.mjs` | Bundelen naar het losse script en de zelfstandige HTML |
+| `src/plan-data.json` | Uitgelezen SVG-coördinaten en curvepunten |
+| `src/plan.js` | Schaal, coördinatenstelsel en koppeling van vectoren aan onderdelen |
+| `src/model.js` | Procedurale 3D-geometrie en bewegende hijsonderdelen |
+| `src/travelift-animation.js` | Route en omkeerbare tijdlijn met 17 fasen |
+| `src/locations.js` | Faciliteiten, teksten, hotspotankers en camerastanden |
+| `src/component.js` | Bediening, camera, toegankelijkheid, pauzeren en renderen |
+| `src/styles.css`, `src/icons.js` | Vormgeving en lijniconen |
+| `tools/import_plan.py` | Herleidbare extractie van de zichtbare SVG-vectoren |
+| `tests/` | Geometrie- en animatiecontroles |
 
-Na bronwijzigingen opnieuw bouwen:
+Met Node.js 20 of hoger:
 
 ```sh
 npm ci
+npm test
 npm run build
 ```
 
-Gebruik een recente Node.js-versie (20 of hoger). Optioneel opent `npm start` een lokale server op `http://127.0.0.1:4173`, mits Python 3 beschikbaar is. Voor het gewone bekijken of inbouwen is geen installatie nodig.
+`npm start` start een lokale preview via Python 3 op poort 4173. Voor alleen bekijken is geen installatie nodig.
 
-## Maassluis later toevoegen
-
-1. Vul `LOCATIONS.maassluis` met `district`, `address`, `overview`, `stats` en `features`.
-2. Voeg in `src/model.js` een builder toe aan `MODEL_BUILDERS.maassluis`. Gebruik dezelfde groepnamen als de feature-ID's.
-3. Zet `available: true` en bouw opnieuw.
-
-De bestaande locatieknoppen laden dan de betreffende locatie via `setLocation()`. Een locatie bevat haar eigen teksten, hotspotcoördinaten en camera-instellingen. In deze versie is Maassluis bewust uitgeschakeld.
-
-Optioneel kan de website luisteren naar selectie:
-
-```js
-document.querySelector('de-haas-shipyard').addEventListener('facilitychange', event => {
-  console.log(event.detail.location, event.detail.facility);
-});
-```
+Bij een gewijzigde SVG: vervang de referentie, voer `python3 tools/import_plan.py` uit en controleer de semantische elementkoppelingen in `src/plan.js`. Die koppelingen horen bij deze Illustrator-export; een andere elementvolgorde moet expliciet worden gemapt. Bouw daarna opnieuw.
 
 ## Controle en prestaties
 
-- Build en broncode gecontroleerd; alle acht faciliteiten openen het juiste paneel.
-- Hotspot → lijst, lijst → camerafocus, reset, inklappen/heropenen, zoomgrenzen, toetsenbord en vergroten/Escape gecontroleerd.
-- Schermbreedtes 320, 390, 1.024 en 1.440 px bekeken. Canvas en markers schalen samen. Op 320 px waren alle acht markers zichtbaar zonder overlappende klikvlakken.
-- Fallback met uitgeschakelde WebGL getest; de lijst blijft werken.
-- Revisie 21 september: de nieuwe kantoor-, kraan- en scheepsmodellen visueel gecontroleerd, hotspotselectie en camerafocus opnieuw bekeken. Ook bij 320 px waren alle acht markers zichtbaar, zonder overlappende klikvlakken; daarnaast is 390 px opnieuw bekeken. Geen waarschuwingen of fouten in de browserconsole tijdens deze controles.
-- Scene: circa **121.000 driehoeken**, **54 samengevoegde meshgroepen**. Schaduwweergave kan extra tekenopdrachten veroorzaken.
-- Script ongeveer **1,1 MB ongecomprimeerd**, circa **0,39 MB met gzip**, inclusief Three.js en de huisstijlassets. Geen externe 3D-downloads.
-- De scene rendert op aanvraag tijdens interactie en camera-overgangen; er is geen doorlopende kraan-, water- of scheepsanimatie. De pixeldichtheid is begrensd.
+- Negen niet-lege faciliteiten, eindige geometriecoördinaten, geen fototextures of koraalkleur in het model.
+- 1.380 tijdstippen in de volledige cyclus gecontroleerd: de wielcontactpunten blijven op land, de gedraaide omhulling van de lift raakt geen vaste scheeps-, auto- of gebouwvoetafdrukken en een gehesen boot blijft onder de lift.
+- Alle faseovergangen en de overgang naar de volgende cyclus gecontroleerd op sprongen in positie, draaihoek en stuurstand. Ook is gecontroleerd dat de daadwerkelijke 3D-onderdelen de berekende draai- en stuurhoeken overnemen. Boot en lift staan tijdens de werkpauze op hun afzonderlijke bestemmingen.
+- Het bovenaanzicht vergeleken met de SVG. Geladen transport, plaatsing en te-waterlating visueel bekeken in de browser.
+- Pauzeren, bovenaanzicht, reset, bewegende liftselectie en magazijnhotspot gecontroleerd. Op 320 px zijn alle negen markers zichtbaar zonder overlappende klikvlakken; de nieuwe bedieningsknoppen blijven bruikbaar.
+- Circa **126.800 driehoeken**, **98 meshgroepen** inclusief losse hijskabels, banden en vier bestuurbare wielstellen. Statische geometrie is per onderdeel en materiaal samengevoegd.
+- Zelfstandige pagina circa **1,13 MiB**, inclusief Three.js, fonts, logo en het vectorplan. Geen externe modeldownloads.
+- Alleen bij lopende animatie, camerabeweging of interactie wordt doorlopend gerenderd. De pixeldichtheid is begrensd. Bij pauze komt de weergave tot rust; verborgen of buiten beeld geplaatste kaarten lopen niet door.
 
-De browsertests zijn uitgevoerd in de ingebouwde Chromium-browser. Touchbediening is ingericht met Three.js OrbitControls; er is geen fysieke tablet of brede reeks laptops op beeldsnelheid getest. Controle in de uiteindelijke WordPress-pagina blijft nodig voor de beschikbare breedte en eventuele sitebeperkingen.
+De visuele controles zijn uitgevoerd in de ingebouwde Chromium-browser. Een fysieke tablet en de uiteindelijke WordPress-inbedding zijn niet getest.
 
-## Bronnen en assets
+## Maassluis later toevoegen
 
-- De door Coen aangeleverde foto's, screenshots, gelabelde luchtfoto en `de-haas-rotterdam_referentiemateriaal.html`.
-- Aanvullingen van 21 september 2026: luchtfoto `_K9I4595.JPG`, screenshot van de isometrische Rotterdam-kaart, RPA-vaartuigen op stutten en het zijaanzicht van RPA 15. De oorspronkelijke bestanden worden niet in deze download opgenomen.
-- [De Haas Shipyards](https://dehaas.nl/shipyards/) — capaciteit travelift en locatie.
-- [Onze faciliteiten](https://dehaas.nl/shipyards/onze-faciliteiten/) — huisstijl, logo, fonts en informatiepatroon.
-- [Google Maps: Scheepsbouwplein 3](https://www.google.com/maps/place/Scheepsbouwplein+3,+Rotterdam/) — satellietcontrole en bassinmeetlijn, geraadpleegd 18 september 2026.
-- [Netherlands Maritime Technology: de werf in Rotterdam](https://www.maritimetechnology.nl/nl/actueel/de-haas-shipyards-bouwt-aan-de-scheepswerf-van-de-toekomst-op-een-bruisend-historische-plek-in-rotterdam) — achtergrond van de loods.
+Vul `LOCATIONS.maassluis`, voeg een builder aan `MODEL_BUILDERS` toe en zet `available: true`. Een locatie bevat zijn eigen faciliteiten en camera-instellingen. De huidige animatie is specifiek voor de Rotterdamse SVG-indeling.
 
-Three.js 0.180.0 is meegeleverd onder de MIT-licentie. De bijbehorende licentieteksten staan in de map en in de gegenereerde bestanden. Het De Haas-logo en de Gilroy-fonts zijn overgenomen uit de bestaande klantwebsite voor deze De Haas-component; hun bestaande merkrechten en fontlicenties blijven van toepassing. Referentiefoto's zijn niet als siteassets meegeleverd.
+## Assets en rechten
+
+Three.js 0.180.0 en het geometrische lettertype hebben meegeleverde licenties. Logo en Gilroy-fonts komen van de bestaande De Haas-site voor gebruik in deze klantcomponent; bestaande merk- en fontrechten blijven van toepassing. Foto’s zijn alleen als referentie gebruikt en worden niet in de pagina of download opgenomen.

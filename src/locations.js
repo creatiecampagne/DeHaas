@@ -1,5 +1,6 @@
-// One world unit is one metre. Object dimensions are visual estimates except
-// for the published hall envelope. See README.md for measurement provenance.
+import { center, toWorld, SOURCE, LIFT_START } from './plan.js';
+// Plan coordinates follow the supplied SVG at one uniform scale.
+// Heights are photographic estimates; see README.md.
 export const PALETTE = {
   navy: '#1c3b71', blue: '#3c66a2', light: '#83a4cd', coral: '#e55c5e',
   surface: '#edf1f6', white: '#ffffff'
@@ -8,27 +9,27 @@ export const LOCATIONS = {
   rotterdam: {
     name: 'Rotterdam', district: 'RDM · Heijplaat', address: 'Scheepsbouwplein 3, Rotterdam',
     available: true,
-    overview: {target:[8,0,-3],direction:[-.64,.59,.63],distance:485,fitWidth:610},
+    overview: {target:[4,0,-2],direction:[-.72,.73,.42],distance:425,fitWidth:480},
     stats: [{value:'820',unit:'ton',label:'Hefvermogen travelift'},{value:'70',unit:'meter',label:'Scheepslengte tot circa'}],
     features: [
-      { id:'basin', number:'01', name:'Insteekhaven', icon:'basin', anchor:[53,3,-136], target:[53,0,-111], distance:160,
+      { id:'basin', number:'01', name:'Insteekhaven', icon:'basin', anchor:toWorld(1720,1287,4), target:toWorld(1720,1287,1), distance:120,
         description:'Vanaf de Nieuwe Maas varen schepen de insteekhaven binnen. Hier neemt de travelift het schip over voor werkzaamheden op de werf.', facts:[['Direct aan','de Nieuwe Maas']] },
-      { id:'lift', number:'02', name:'820 tons travelift', icon:'lift', anchor:[18,30,-30], target:[18,11,-30], distance:145,
+      { id:'lift', number:'02', name:'820 tons travelift', icon:'lift', anchor:[LIFT_START[0],22,LIFT_START[2]], target:[LIFT_START[0],9,LIFT_START[2]], distance:125,
         description:'De Marine Travelift 820C zet schepen snel en gecontroleerd op het droge. Ook vaartuigen met een complex onderwaterschip kunnen worden gehesen.', facts:[['Hefvermogen','820 ton'],['Scheepslengte','ca. 70 m'],['Scheepsbreedte','ca. 14,5 m']] },
-      { id:'wash', number:'03', name:'Afspuitplaats', icon:'wash', anchor:[75,4,-113], target:[77,3,-113], distance:165,
+      { id:'wash', number:'03', name:'Afspuitplaats', icon:'wash', anchor:center(SOURCE.wash,4), target:center(SOURCE.wash,1), distance:135,
         description:'Een speciaal ingericht werkvlak voor het reinigen van scheepsrompen met hogedrukwater. Afwatering voert het gebruikte water af.', facts:[['Voorbereiding','Reiniging & onderhoud']] },
-      { id:'crane', number:'04', name:'Kadekraan', icon:'crane', anchor:[-64,42,-24], target:[-57,18,-24], distance:165,
+      { id:'crane', number:'04', name:'Kadekraan', icon:'crane', anchor:center(SOURCE.crane,33), target:center(SOURCE.crane,14), distance:145,
         description:'De kraan aan de kade ondersteunt hijswerkzaamheden tussen het water en de werf, van scheepsonderdelen tot materieel.', facts:[['Locatie','Aan de kade']] },
-      { id:'yard', number:'05', name:'Scheepswerf', icon:'yard', anchor:[-36,26,-32], target:[-30,8,-16], distance:210,
+      { id:'yard', number:'05', name:'Scheepswerf', icon:'yard', anchor:toWorld(1180,815,5), target:toWorld(1060,750,5), distance:220,
         description:'Op de verharde werfvloer werken onze vakmensen aan onderhoud, reparatie en renovatie. Schepen staan hier op stutten en kielblokken.', facts:[['Vloeistofdichte vloer','ruim 1 hectare']] },
-      { id:'office', number:'06', name:'Kantoor', icon:'office', anchor:[-5,11,24], target:[-5,4,26], distance:135,
+      { id:'office', number:'06', name:'Kantoor', icon:'office', anchor:toWorld(880,911,9), target:toWorld(870,900,3), distance:110,
         description:'De kantoorunits staan midden op de werf. Een direct aanspreekpunt, dicht bij de schepen en de werkzaamheden.', facts:[['Adres','Scheepsbouwplein 3']] },
-      { id:'hall', number:'07', name:'Scheepsreparatiehallen', icon:'hall', anchor:[63,32,70], target:[63,11,70], distance:230,
+      { id:'hall', number:'07', name:'Scheepsreparatiehallen', icon:'hall', anchor:center(SOURCE.hall,32), target:center(SOURCE.hall,10), distance:240,
         description:'De historische scheepsbouwloods biedt beschutte werkruimte voor grote projecten. Hoge ramen, staalconstructies en de monumentale schuifpoort geven de hal haar karakter.', facts:[['Lengte × breedte','ca. 120 × 28 m'],['Vrije hoogte','ruim 21 m']] },
-      { id:'pontoons', number:'08', name:'Afmeerpontons', icon:'pontoons', anchor:[-99,5,24], target:[-102,3,21], distance:165,
+      { id:'pontoons', number:'08', name:'Afmeerpontons', icon:'pontoons', anchor:toWorld(1310,410,4), target:toWorld(1300,415,2), distance:155,
         description:'De drijvende pontons bieden aanlegplaatsen langs de werf. Loopbruggen verbinden de schepen en pontons met de kade.', facts:[['Ligging','Langs de werfkade']] },
-      { id:'warehouse', number:'09', name:'Het Magazijn', icon:'hall', anchor:[105,17,-113], target:[105,6,-113], distance:180,
-        description:'Het Magazijn ligt naast de insteekhaven. De lange gevel met hoge ramen en daklichten maakt het gebouw herkenbaar vanaf het terrein.', facts:[['Ligging','Naast de insteekhaven']] }
+      { id:'warehouse', number:'09', name:'Het Magazijn', icon:'hall', anchor:center(SOURCE.warehouseDeHaas,16), target:center(SOURCE.warehouseDeHaas,5), distance:150,
+        description:'Het Magazijn ligt naast de afspuitplaats en insteekhaven. Twee van de vier hallen zijn in gebruik door De Haas; de overige hallen zijn wit weergegeven.', facts:[['In gebruik','2 van de 4 hallen']] }
     ]
   },
   // Add a model builder and feature data here to enable the second location.

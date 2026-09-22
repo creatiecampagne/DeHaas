@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { LOCATIONS, PALETTE as C } from './locations.js';
 import { MODEL_BUILDERS } from './model.js';
+import { CYCLE_SECONDS } from './travelift-animation.js';
 import { icon } from './icons.js';
 import styles from './styles.css';
 
@@ -23,6 +24,7 @@ export class DeHaasShipyard extends HTMLElement {
     if(!LOCATIONS[this.locationId]?.available)this.locationId='rotterdam';
     this.data=LOCATIONS[this.locationId];this.selected=null;this.preview=null;this.panelOpen=true;this.isOverview=true;
     this.reducedMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
+    this.animationPlaying=!this.reducedMotion;this.animationTime=0;this.lastFrameTime=null;this.topView=false;this.inViewport=true;
     this.renderUI();loadFonts();this.bindUI();
     try { this.setupScene(); } catch(error) { console.error('De Haas kaart:',error);this.showFallback(); }
   }
@@ -52,9 +54,11 @@ export class DeHaasShipyard extends HTMLElement {
             <div class="location-note">${icon('pin')} <span>${this.data.district.split(' · ')[0]}, ${this.data.name}</span><span class="sep"></span><span class="mode">Interactieve plattegrond</span></div>
             <div class="controls" role="group" aria-label="Kaartbediening">
               <div class="control-group"><button class="control reset" data-action="reset" aria-label="Reset view: terug naar overzicht" title="Terug naar overzicht">${icon('reset')}<span>Overzicht</span></button></div>
+              <div class="control-group"><button class="control" data-action="top" aria-label="Bovenaanzicht" aria-pressed="false" title="Bovenaanzicht">${icon('top')}</button></div>
               <div class="control-group"><button class="control" data-action="zoom-out" aria-label="Uitzoomen" title="Uitzoomen">${icon('minus')}</button><button class="control" data-action="zoom-in" aria-label="Inzoomen" title="Inzoomen">${icon('plus')}</button></div>
               <div class="control-group"><button class="control" data-action="fullscreen" aria-label="Kaart vergroten" aria-pressed="false" title="Kaart vergroten">${icon('expand')}</button><button class="control" data-action="help" aria-label="Uitleg kaartbediening" aria-expanded="false" title="Kaartbediening">${icon('help')}</button></div>
             </div>
+            <div class="animation-bar"><button data-action="animation" aria-label="${this.animationPlaying?'Animatie pauzeren':'Animatie afspelen'}" title="Traveliftanimatie">${icon(this.animationPlaying?'pause':'play')}</button><div class="animation-caption"><strong>Travelift in actie</strong><span class="animation-status">Klaar bij de insteekhaven</span></div><progress class="animation-progress" max="1" value="0" aria-label="Voortgang traveliftcyclus"></progress></div>
             <div class="map-help" hidden><strong>Bekijk de werf van alle kanten</strong><p>Sleep om te draaien. Scroll of gebruik + en − om te zoomen. Op een touchscreen: draai met één vinger en zoom met twee vingers.</p><p>Met het toetsenbord: focus de kaart, gebruik de pijltjes om te draaien, +/− om te zoomen en Home voor het overzicht.</p><p>Kies een nummer of faciliteit voor meer informatie.</p></div>
             <div class="loading" role="status">${icon('lift')}<span>De werf wordt opgebouwd…</span></div>
             <div class="fallback" hidden>${icon('hall')}<strong>Ontdek onze faciliteiten</strong><p>De 3D-weergave is niet beschikbaar in deze browser. Je kunt alle faciliteiten bekijken via de lijst.</p></div>
@@ -91,6 +95,8 @@ export class DeHaasShipyard extends HTMLElement {
       if(action==='zoom-in')this.zoom(.82);
       if(action==='zoom-out')this.zoom(1.22);
       if(action==='fullscreen')this.toggleFullscreen();
+      if(action==='animation')this.toggleAnimation();
+      if(action==='top')this.toggleTopView();
       if(action==='help'){const open=this.$('.map-help').hidden;this.$('.map-help').hidden=!open;button.setAttribute('aria-expanded',String(open));}
     });
     this.on(document,'keydown',e=>{
@@ -115,6 +121,7 @@ export class DeHaasShipyard extends HTMLElement {
     if(id&&this.panelOpen)this.ensureRowVisible(id);
   }
   select(id,focus=false){
+    this.followLift=id==='lift'&&focus;
     this.isOverview=!id;
     this.selected=id;this.preview=null;this.updateSelection();
     const f=this.data.features.find(f=>f.id===id);
@@ -130,7 +137,7 @@ export class DeHaasShipyard extends HTMLElement {
     const active=this.preview||this.selected;
     const selectedFeature=this.data.features.find(f=>f.id===this.selected);
     this.$('.map-heading').classList.toggle('focused',!!selectedFeature);
-    this.$('.map-heading h1').innerHTML=selectedFeature?selectedFeature.name:'Een werf.<br>Alle mogelijkheden.';
+    this.$('.map-heading h1').innerHTML=selectedFeature?selectedFeature.name:this.topView?'Plattegrond':'Een werf.<br>Alle mogelijkheden.';
     this.$('.map-heading p').textContent=selectedFeature?`${selectedFeature.facts[0][0]} · ${selectedFeature.facts[0][1]}`:'Verken onze faciliteiten vanuit elke hoek.';
     this.$('.water-label').hidden=!!selectedFeature;
     for(const f of this.data.features){
@@ -171,14 +178,17 @@ export class DeHaasShipyard extends HTMLElement {
     sun.shadow.mapSize.set(2048,2048);sun.shadow.normalBias=.18;sun.shadow.bias=-.00015;sun.shadow.radius=2;this.scene.add(sun);
     this.camera=new THREE.PerspectiveCamera(36,1,.5,1800);
     this.controls=new OrbitControls(this.camera,canvas);this.controls.enableDamping=true;this.controls.dampingFactor=.10;this.controls.enablePan=false;
-    this.controls.minPolarAngle=.18;this.controls.maxPolarAngle=Math.PI/2-.18;this.controls.minDistance=78;this.controls.maxDistance=850;
+    this.controls.minPolarAngle=.001;this.controls.maxPolarAngle=Math.PI/2-.18;this.controls.minDistance=60;this.controls.maxDistance=850;
     this.controls.rotateSpeed=.65;this.controls.zoomSpeed=.8;this.controls.target.set(-8,1,-2);
     this.controls.addEventListener('change',()=>this.invalidate());
-    this.controls.addEventListener('start',()=>{this.transition=null;this.isOverview=false;this.setPreview(null);this.$('.help-strip').style.opacity='.45';});
+    this.controls.addEventListener('start',()=>{this.transition=null;this.followLift=false;this.isOverview=false;this.topView=false;this.$('.component').classList.remove('top-view');this.$('[data-action="top"]').setAttribute('aria-pressed','false');this.setPreview(null);this.updateSelection();this.$('.help-strip').style.opacity='.45';});
     this.model=MODEL_BUILDERS[this.locationId]();this.scene.add(this.model.root);
+    if(!this.model.updateAnimation){this.animationPlaying=false;this.$('.animation-bar').hidden=true;}
     this.anchors=this.data.features.map(f=>({data:f,point:new THREE.Vector3(...f.anchor),el:this.$(`.hotspot[data-id="${f.id}"]`)}));
     this.projected=new THREE.Vector3();this.northDirection=new THREE.Vector3();this.markerBounds={width:0,height:0};
     this.resizeObserver=new ResizeObserver(()=>this.resize());this.resizeObserver.observe(viewport);
+    this.intersectionObserver=new IntersectionObserver(entries=>{this.inViewport=entries[0].isIntersecting;this.lastFrameTime=null;if(this.inViewport)this.invalidate();else{cancelAnimationFrame(this.raf);this.raf=0;}});
+    this.intersectionObserver.observe(viewport);
     this.on(canvas,'keydown',e=>{
       if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','+','=','-','Home'].includes(e.key))e.preventDefault();
       if(e.key==='Home')this.resetView();else if(e.key==='+'||e.key==='=')this.zoom(.82);else if(e.key==='-')this.zoom(1.22);
@@ -194,7 +204,7 @@ export class DeHaasShipyard extends HTMLElement {
     this.on(canvas,'webglcontextrestored',()=>{
       this.$('.component').classList.remove('error');this.$('.fallback').hidden=true;this.renderer.shadowMap.needsUpdate=true;this.invalidate();
     });
-    this.on(document,'visibilitychange',()=>{if(document.hidden){cancelAnimationFrame(this.raf);this.raf=0;}else this.invalidate();});
+    this.on(document,'visibilitychange',()=>{this.lastFrameTime=null;if(document.hidden){cancelAnimationFrame(this.raf);this.raf=0;}else this.invalidate();});
     this.resize(true);this.renderer.shadowMap.needsUpdate=true;this.invalidate();
     this.$('.loading').hidden=true;
   }
@@ -215,7 +225,7 @@ export class DeHaasShipyard extends HTMLElement {
     this.invalidate();
   }
   focusFeature(f){
-    const target=new THREE.Vector3(...f.target),direction=this.camera.position.clone().sub(this.controls.target).normalize();
+    const target=f.id==='lift'&&this.model.liftAnchor?this.model.liftAnchor().add(new THREE.Vector3(0,-13,0)):new THREE.Vector3(...f.target),direction=this.camera.position.clone().sub(this.controls.target).normalize();
     const aspect=this.camera.aspect,distance=f.distance*Math.max(1,1.05/aspect);
     this.animateCamera(target.clone().add(direction.multiplyScalar(distance)),target);
   }
@@ -225,7 +235,22 @@ export class DeHaasShipyard extends HTMLElement {
     this.transition={start:performance.now(),duration:850,fromPosition:this.camera.position.clone(),fromTarget:this.controls.target.clone(),position,target};this.invalidate();
   }
   resetCamera(){if(!this.camera)return;const v=this.defaultView();this.animateCamera(v.position,v.target);}
-  resetView(){this.selected=null;this.preview=null;this.isOverview=true;this.updateSelection();this.resetCamera();this.$('.announcement').textContent='Overzicht van de volledige werf.';this.$('.help-strip').style.opacity='1';}
+  resetView(){this.selected=null;this.preview=null;this.followLift=false;this.topView=false;this.$('[data-action="top"]').setAttribute('aria-pressed','false');this.$('.component').classList.remove('top-view');this.isOverview=true;this.updateSelection();this.resetCamera();this.$('.announcement').textContent='Overzicht van de volledige werf.';this.$('.help-strip').style.opacity='1';}
+  toggleAnimation(){
+    this.animationPlaying=!this.animationPlaying;this.lastFrameTime=null;
+    const button=this.$('[data-action="animation"]');button.innerHTML=icon(this.animationPlaying?'pause':'play');button.setAttribute('aria-label',this.animationPlaying?'Animatie pauzeren':'Animatie afspelen');
+    this.$('.animation-bar').classList.toggle('paused',!this.animationPlaying);this.invalidate();
+  }
+  toggleTopView(){
+    if(this.topView){this.resetView();return;}
+    this.topView=true;this.selected=null;this.preview=null;this.followLift=false;this.isOverview=false;this.updateSelection();
+    this.$('[data-action="top"]').setAttribute('aria-pressed','true');this.$('.component').classList.add('top-view');
+    if(this.animationPlaying)this.toggleAnimation();
+    const target=new THREE.Vector3(7,0,-3),distance=Math.max(420,455/Math.max(.4,this.camera.aspect));
+    // Look down with SVG horizontal axis running left to right on screen.
+    this.animateCamera(target.clone().add(new THREE.Vector3(.001,distance,0)),target);
+    this.$('.announcement').textContent='Bovenaanzicht. De animatie is gepauzeerd om de plattegrond te controleren.';
+  }
   zoom(factor){
     if(!this.camera)return;this.transition=null;this.isOverview=false;
     const offset=this.camera.position.clone().sub(this.controls.target),distance=THREE.MathUtils.clamp(offset.length()*factor,this.controls.minDistance,this.controls.maxDistance);
@@ -237,9 +262,21 @@ export class DeHaasShipyard extends HTMLElement {
     this.toggleAttribute('expanded',expanded);
     button.setAttribute('aria-pressed',String(expanded));button.setAttribute('aria-label',expanded?'Vergrote kaart sluiten':'Kaart vergroten');this.resize();
   }
-  invalidate(){if(this.raf||this.disposed||document.hidden||!this.renderer)return;this.raf=requestAnimationFrame(time=>this.draw(time));}
+  invalidate(){if(this.raf||this.disposed||document.hidden||!this.inViewport||!this.renderer)return;this.raf=requestAnimationFrame(time=>this.draw(time));}
   draw(time){
     this.raf=0;if(this.disposed)return;
+    const delta=this.lastFrameTime===null?0:Math.min(.1,(time-this.lastFrameTime)/1000);this.lastFrameTime=time;
+    if(this.animationPlaying)this.animationTime=(this.animationTime+delta)%CYCLE_SECONDS;
+    const state=this.model.updateAnimation?.(this.animationTime);
+    if(state){
+      if(this.lastAnimationPhase!==state.phase){this.$('.animation-status').textContent=state.label;this.lastAnimationPhase=state.phase;}
+      this.$('.animation-progress').value=state.progress;
+      if(this.followLift&&!this.transition){
+        const target=this.model.liftAnchor().add(new THREE.Vector3(0,-13,0));
+        this.camera.position.add(target.clone().sub(this.controls.target));this.controls.target.copy(target);
+      }
+    }
+    if(this.animationPlaying){this.renderer.shadowMap.needsUpdate=true;this.invalidate();}
     if(this.transition){
       const tr=this.transition,t=Math.min(1,(time-tr.start)/tr.duration),ease=t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
       this.camera.position.lerpVectors(tr.fromPosition,tr.position,ease);this.controls.target.lerpVectors(tr.fromTarget,tr.target,ease);
@@ -256,9 +293,12 @@ export class DeHaasShipyard extends HTMLElement {
     const {width,height}=this.markerBounds;
     const mapRect=this.$('.viewport').getBoundingClientRect(),headingRect=this.$('.map-heading').getBoundingClientRect();
     const heading={left:headingRect.left-mapRect.left-4,right:headingRect.right-mapRect.left+4,top:headingRect.top-mapRect.top-4,bottom:headingRect.bottom-mapRect.top+4};
+    const animationRect=this.$('.animation-bar').getBoundingClientRect();
+    const animation={left:animationRect.left-mapRect.left-5,right:animationRect.right-mapRect.left+5,top:animationRect.top-mapRect.top-5,bottom:animationRect.bottom-mapRect.top+5};
     const placed=[];
     // Stable ordering prevents a hovered marker from moving under the pointer.
     for(const {point,el,data} of this.anchors){
+      if(data.id==='lift'&&this.model.liftAnchor)point.copy(this.model.liftAnchor());
       this.projected.copy(point).project(this.camera);
       const x=(this.projected.x*.5+.5)*width,y=(-this.projected.y*.5+.5)*height;
       const visible=this.projected.z<1&&this.projected.z>-1&&x>10&&x<width-10&&y>12&&y<height-55;
@@ -277,6 +317,7 @@ export class DeHaasShipyard extends HTMLElement {
           const px=x+dx,py=y+dy;
           if(py<55||py>height-75||px<24||px>width-24)continue;
           if(px+22>heading.left&&px-22<heading.right&&py>heading.top&&py-44<heading.bottom)continue;
+          if(px+22>animation.left&&px-22<animation.right&&py+6>animation.top&&py-44<animation.bottom)continue;
           if(!placed.some(p=>Math.abs(p.x-px)<46&&Math.abs(p.y-py)<52)){offsetX=dx;offsetY=dy;break;}
         }
         const px=x+offsetX,py=y+offsetY;placed.push({x:px,y:py});
@@ -292,7 +333,7 @@ export class DeHaasShipyard extends HTMLElement {
     this.disconnectedCallback();this.setAttribute('location',id);this.connectedCallback();
   }
   disconnectedCallback(){
-    this.disposed=true;this.initialized=false;cancelAnimationFrame(this.raf);this.raf=0;this.abort?.abort();this.resizeObserver?.disconnect();this.controls?.dispose();
+    this.disposed=true;this.initialized=false;cancelAnimationFrame(this.raf);this.raf=0;this.abort?.abort();this.resizeObserver?.disconnect();this.intersectionObserver?.disconnect();this.controls?.dispose();
     this.scene?.traverse(o=>{if(o.isMesh)o.geometry.dispose();});
     this.model?.materials.forEach(m=>m.dispose());
     this.scene?.traverse(o=>{if(o.isLight&&o.shadow)o.shadow.dispose();});this.renderer?.dispose();

@@ -7,6 +7,7 @@ const paths = {
   office:'M4 22V3h16v19M2 22h20M8 7h2m4 0h2M8 11h2m4 0h2M8 15h2m4 0h2M10 22v-4h4v4',
   hall:'M2 8l10-6 10 6M4 8v14h16V8L12 4ZM8 22V11h8v11M8 15h8M12 11v11',
   pontoons:'M2 4h20v4H2ZM6 8v9m5-9v9m5-9v9M2 21q2-3 4 0q2-3 4 0q2-3 4 0q2-3 4 0q2-3 4 0',
+  pause:'M8 5v14M16 5v14', play:'m8 4 12 8-12 8Z', top:'M3 3h18v18H3ZM3 9h18M9 3v18',
   chevron:'m9 5 7 7-7 7', plus:'M12 5v14M5 12h14', minus:'M5 12h14',
   reset:'M4 10a8 8 0 1 1 2 8M4 4v6h6', expand:'M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5',
   panel:'M3 4h18v16H3ZM15 4v16m-7-6 3-2-3-2', pin:'M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 1 1 14 0ZM10 10h4',
