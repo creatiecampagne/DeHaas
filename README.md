@@ -1,4 +1,4 @@
-# De Haas Shipyards — interactieve werfkaart 2.0
+# De Haas Shipyards — interactieve werfkaart 2.2.2 — draaien op de plaats
 
 Een zelfstandige Three.js-component voor de Rotterdamse werf. Alle 3D-geometrie wordt in code opgebouwd. Het script, logo en de Gilroy-lettertypen zijn in `index.html` ingesloten; er zijn geen externe 3D-bestanden, textures of CDN-verzoeken nodig.
 
@@ -23,19 +23,17 @@ Eén uniforme schaal gebruikt de eerdere opgave van **120 m hallengte**: 883,976
 
 De SVG bevat geen maatlijnen. De absolute schaal is daarom nog geen onafhankelijke landmeting: bijvoorbeeld de getekende parkeersteek van circa 11,565 SVG-eenheden komt met deze kalibratie uit op circa 1,57 m. De SVG-verhoudingen zijn behouden. Voor meetvaste fysieke afmetingen is een bevestigde maat in het nieuwe plan nodig. Hoogtes blijven schattingen op basis van foto’s (hoofdhal circa 26 m gevelhoogte, travelift circa 21 m, magazijn circa 11 m, kantoor twee lagen).
 
-## Traveliftcyclus
+## Traveliftcyclus — draaien op de plaats
 
-De animatie volgt de getekende route tussen de boot in de insteekhaven en de gestippelde standplaats. Eén volledige cyclus duurt **138 seconden**, inclusief rustmomenten:
+De draai om de eigen as uit de eerdere uitvoering is terug. De lift rijdt door de rijstrook, stopt op het open werkterrein, zet de vier wielstellen in de draaistand en draait langzaam een kwartslag op dezelfde positie. Daarna zet hij de wielen recht en rijdt rechtstreeks naar de bokken. De steekmanoeuvre is verwijderd.
 
-1. De lift vertrekt vanaf zijn SVG-startpositie en rijdt over de boot.
-2. De banden zakken, sluiten onder de romp en hijsen de boot uit het water.
-3. De lift brengt het schip over de aangegeven route naar de werf en zet het op bokken.
-4. De banden komen vrij; de lift rijdt zonder boot terug naar de startpositie.
-5. Na 12 seconden haalt de lift de boot weer op.
-6. Het schip gaat via dezelfde route terug naar de insteekhaven en wordt te water gelaten.
-7. De lege lift keert terug naar de startplaats. Na een rustmoment begint de cyclus opnieuw.
+De grondvorm, kade, gebouwen, parkeervakken en scheepsmaten blijven gebaseerd op versie 2.2. Het kleine vaste schip naast de losplaats behoudt de vorige verschuiving van circa 4,07 modelmeter. Voor de vrije draaicirkel staat het grotere schip aan de overkant (SVG-element 326) circa 2,04 modelmeter verder van de draaiplek. De losplaats ligt bij (1062, 900), de draaiplek bij (1222, 900). Deze lokale objectposities veranderen de terreinvorm niet.
 
-De last, banden en kabels bewegen samen. De boot blijft tijdens het wachten op de bokken staan. De hotspot van de travelift beweegt mee. Als de travelift geselecteerd is, volgt de camera zijn beweging; zelf slepen beëindigt dat volgen. De lift, de hijsbanden en het gehesen schip draaien mee met de bochten. De vier wielstellen sturen zichtbaar, met tegengestelde stuurhoeken voor en achter. Op de terugweg rijdt de lift achteruit langs dezelfde bochten. De aanrijbocht naar de bokken is afgerond en iets verruimd om de vaste schepen vrij te houden; start- en eindposities blijven gelijk aan de SVG. Beweging en snelheid zijn illustratief.
+Na het lossen rijdt de lege lift eerst recht van het schip af en draait pas op de vrije draaiplek terug. De afstand tussen losplaats en draaiplek is circa 21,72 modelmeter. Ophalen en terugbrengen gebruiken dezelfde bewegingen in omgekeerde volgorde. Er staat geen witte scheepsomtrek op de grond.
+
+De volledige cyclus duurt **272 seconden (4 min 32 s)**, inclusief hijsen, rijden en rustmomenten. Bij de draai blijven de positie van het portaal en zijn middelpunt constant; alleen de richting verandert. De boot en hijsbanden draaien mee zolang het schip hangt. De statusbalk vermeldt de draai om de eigen as.
+
+De hotspot beweegt mee. Als de travelift geselecteerd is, volgt de camera zijn beweging; zelf slepen beëindigt het volgen. De beweging is illustratief.
 
 De cyclus is een functie van verstreken tijd. Daardoor ontstaat bij herhaling, pauzeren of tabwissels geen opstapelende positieafwijking. Een verborgen tab of een kaart buiten het scherm pauzeert de voortgang. Bij `prefers-reduced-motion` start de kaart gepauzeerd; de bezoeker kan de animatie zelf starten.
 
@@ -84,7 +82,7 @@ Voor de gestapelde mobiele indeling is een hoger iframe wenselijk, circa 1.110 p
 | `src/plan-data.json` | Uitgelezen SVG-coördinaten en curvepunten |
 | `src/plan.js` | Schaal, coördinatenstelsel en koppeling van vectoren aan onderdelen |
 | `src/model.js` | Procedurale 3D-geometrie en bewegende hijsonderdelen |
-| `src/travelift-animation.js` | Route en omkeerbare tijdlijn met 17 fasen |
+| `src/travelift-animation.js` | Omkeerbare tijdlijn met stationaire draai en bestuurbare wielstellen |
 | `src/locations.js` | Faciliteiten, teksten, hotspotankers en camerastanden |
 | `src/component.js` | Bediening, camera, toegankelijkheid, pauzeren en renderen |
 | `src/styles.css`, `src/icons.js` | Vormgeving en lijniconen |
@@ -106,11 +104,12 @@ Bij een gewijzigde SVG: vervang de referentie, voer `python3 tools/import_plan.p
 ## Controle en prestaties
 
 - Negen niet-lege faciliteiten, eindige geometriecoördinaten, geen fototextures of koraalkleur in het model.
-- 1.380 tijdstippen in de volledige cyclus gecontroleerd: de wielcontactpunten blijven op land, de gedraaide omhulling van de lift raakt geen vaste scheeps-, auto- of gebouwvoetafdrukken en een gehesen boot blijft onder de lift.
-- Alle faseovergangen en de overgang naar de volgende cyclus gecontroleerd op sprongen in positie, draaihoek en stuurstand. Ook is gecontroleerd dat de daadwerkelijke 3D-onderdelen de berekende draai- en stuurhoeken overnemen. Boot en lift staan tijdens de werkpauze op hun afzonderlijke bestemmingen.
-- Het bovenaanzicht vergeleken met de SVG. Geladen transport, plaatsing en te-waterlating visueel bekeken in de browser.
+- 2.720 tijdstippen in de volledige cyclus gecontroleerd: de wielcontactpunten blijven op land, de gedraaide omhulling en afzonderlijke wielvoetafdrukken raken geen vaste scheeps-, auto- of gebouwvoetafdrukken of parkeervakken (ook de lege vakken zijn uitgesloten) en een gehesen boot blijft onder de lift.
+- Alle faseovergangen, de interne overgangen tussen rijden, stilstaan en draaien en de overgang naar de volgende cyclus gecontroleerd op sprongen in positie, draaihoek en stuurstand. Ook is gecontroleerd dat de daadwerkelijke 3D-onderdelen de berekende draai- en stuurhoeken overnemen. Boot en lift staan tijdens de werkpauze op hun afzonderlijke bestemmingen.
+- Aanvullende controle van de werkelijke modelonderdelen: 69 vaste liftdelen tegen 269 scheepsonderdelen, op 2.720 tijdstippen. De controle detecteert de oude draai door de neergezette boot en vindt geen doorsnijdingen in de nieuwe cyclus. De omhullingen zijn conservatief; flexibele hijsbanden zijn geen vaste framedelen.
+- De grond- en referentiebestanden zijn gelijk aan de aangeleverde versie 2.2. De stationaire draai en losplaats zijn visueel bekeken in de browser.
 - Pauzeren, bovenaanzicht, reset, bewegende liftselectie en magazijnhotspot gecontroleerd. Op 320 px zijn alle negen markers zichtbaar zonder overlappende klikvlakken; de nieuwe bedieningsknoppen blijven bruikbaar.
-- Circa **126.800 driehoeken**, **98 meshgroepen** inclusief losse hijskabels, banden en vier bestuurbare wielstellen. Statische geometrie is per onderdeel en materiaal samengevoegd.
+- Circa **126.700 driehoeken**, **97 meshgroepen** inclusief losse hijskabels, banden en vier bestuurbare wielstellen. Statische geometrie is per onderdeel en materiaal samengevoegd.
 - Zelfstandige pagina circa **1,13 MiB**, inclusief Three.js, fonts, logo en het vectorplan. Geen externe modeldownloads.
 - Alleen bij lopende animatie, camerabeweging of interactie wordt doorlopend gerenderd. De pixeldichtheid is begrensd. Bij pauze komt de weergave tot rust; verborgen of buiten beeld geplaatste kaarten lopen niet door.
 

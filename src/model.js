@@ -3,8 +3,8 @@ import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { FontLoader } from 'three/addons/loaders/FontLoader.js';
 import fontData from 'three/examples/fonts/helvetiker_regular.typeface.json';
 import { PALETTE as C } from './locations.js';
-import { PLAN, S, SOURCE, outline, center, size, toWorld, LIFT_START, BOAT_START, BOAT_DESTINATION } from './plan.js';
-import { sampleCycle } from './travelift-animation.js';
+import { PLAN, S, SOURCE, outline, center, size, toWorld, LIFT_START, BOAT_START, BOAT_DESTINATION, BERTH_YAW, placedCenter } from './plan.js';
+import { sampleCycle, wheelSteering } from './travelift-animation.js';
 
 const font = new FontLoader().parse(fontData);
 const cube = new THREE.BoxGeometry(1,1,1);
@@ -12,7 +12,7 @@ const cylinder = new THREE.CylinderGeometry(1,1,1,10);
 const tire = new THREE.TorusGeometry(1,.29,6,12);
 const up = new THREE.Vector3(0,1,0);
 
-export function buildRotterdam(){
+export function buildRotterdam({inspectCollisions=false}={}){
   const root = new THREE.Group();
   const features = new Map();
   const materials = {};
@@ -281,7 +281,7 @@ export function buildRotterdam(){
   }
   function makePlanShip(parent,id,afloat=false,name='RPA',supports=true){
     const e=PLAN.elements[id],diagonal=SOURCE.afloat.includes(id),angle=diagonal?3*Math.PI/4:0;
-    const [x,,z]=center(id),[w,l]=size(id),mapped=e.points.map(([u,v])=>toWorld(u,v));
+    const [x,,z]=placedCenter(id),[w,l]=size(id),mapped=e.points.map(([u,v])=>toWorld(u,v));
     const along=mapped.map(p=>p[0]*Math.sin(angle)+p[2]*Math.cos(angle));
     const across=mapped.map(p=>p[0]*Math.cos(angle)-p[2]*Math.sin(angle));
     const length=diagonal?Math.max(...along)-Math.min(...along):l;
@@ -297,9 +297,8 @@ export function buildRotterdam(){
   const hull=makePlanShip(animatedBoat,SOURCE.interactiveShip,false,'RPA 15',false);
   hull.position.set(0,0,0);animatedBoat.position.copy(new THREE.Vector3(...BOAT_START));
   const stands=group(yard,null,...BOAT_DESTINATION);
+  stands.rotation.y=BERTH_YAW;
   for(const z of [-5,0,5]){box(stands,0,.52,z,1.5,1.04,1.4,'blue');box(stands,0,1.10,z,1.7,.12,1.5,'light');}
-  const dest=PLAN.elements[SOURCE.destination].points;
-  for(let i=1;i<dest.length;i+=2)planLine(terrain,[dest[i-1],dest[i]],.05,.10,'white');
 
   const crane=group(root,'crane',...center(SOURCE.crane));
   crane.rotation.y=Math.atan2(825.144-625.806,1361.833-1254.942)-Math.PI/2;
@@ -466,6 +465,18 @@ export function buildRotterdam(){
     }
   }
   for(const id of SOURCE.afloat)makePlanShip(pontoons,id,true,'DE HAAS',false);
+  // Optional inspection data comes from the actual, unmerged model pieces.
+  // The hollow gantry must be checked as separate solid members, not one box.
+  function collisionBoxes(body){
+    body.updateMatrixWorld(true);const inversePosition=new THREE.Matrix4().makeTranslation(-body.position.x,-body.position.y,-body.position.z),parts=[];
+    body.traverse(mesh=>{
+      if(!mesh.isMesh||mesh.geometry.type==='ShapeGeometry')return;
+      mesh.geometry.computeBoundingBox();
+      const bounds=mesh.geometry.boundingBox.clone().applyMatrix4(new THREE.Matrix4().multiplyMatrices(inversePosition,mesh.matrixWorld));
+      parts.push({min:bounds.min.toArray(),max:bounds.max.toArray()});
+    });return parts;
+  }
+  const collisionGeometry=inspectCollisions?{frame:[...collisionBoxes(lift),...collisionBoxes(wheels)],ship:collisionBoxes(animatedBoat)}:undefined;
   const materialInventory=new Set();
   for(const g of [...root.children]){
     g.updateMatrixWorld(true);
@@ -494,7 +505,7 @@ export function buildRotterdam(){
     lift.position.set(state.lift.x,0,state.lift.z);rig.position.copy(lift.position);
     lift.rotation.y=state.liftYaw;rig.rotation.y=state.liftYaw;
     wheels.position.copy(lift.position);wheels.rotation.y=state.liftYaw;
-    for(const bogie of bogies)bogie.rotation.y=Math.sign(bogie.position.z)*state.steering;
+    for(const bogie of bogies)bogie.rotation.y=wheelSteering(state,bogie.position.x,bogie.position.z);
     animatedBoat.position.set(state.boat.x,state.boatY,state.boat.z);
     animatedBoat.rotation.y=state.boatYaw;
     const blockY=state.slingY+2.2;
@@ -509,6 +520,6 @@ export function buildRotterdam(){
     return state;
   }
   updateAnimation(0);
-  return {root,features,materials:materialInventory,updateAnimation,liftAnchor:()=>lift.position.clone().add(new THREE.Vector3(0,22,0))};
+  return {root,features,materials:materialInventory,updateAnimation,collisionGeometry,liftAnchor:()=>lift.position.clone().add(new THREE.Vector3(0,22,0))};
 }
 export const MODEL_BUILDERS={rotterdam:buildRotterdam};
